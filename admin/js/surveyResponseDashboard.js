@@ -4,7 +4,7 @@ function loadadminDashboardCSS() {
     const link = document.createElement("link");
     link.id = "dynamic-css";
     link.rel = "stylesheet";
-    link.href = "home.css"; // Ensure the correct path to home.css
+    link.href = "home.css";
     document.head.appendChild(link);
   }
 }
@@ -59,15 +59,12 @@ function renderSurveyResponseDashboard() {
   pagination.className = "pagination";
   document.body.appendChild(pagination);
 
-  // Ensure we update history to track navigation properly
   if (window.location.pathname !== "/surveyResponseDashboard") {
     window.history.pushState({}, "", "/surveyResponseDashboard");
   }
 
   viewSurveys();
 }
-
-
 
 function loadJS(src, callback) {
   const script = document.createElement("script");
@@ -84,22 +81,16 @@ function routeHandler() {
   document.body.innerHTML = "";
 
   if (path === "/surveyResponses" && surveyId) {
-    console.log("Loading responses.js for surveyId:", surveyId);
     loadJS("admin/js/responses.js", () => {
       if (typeof window.renderSurveyResponses === "function") {
         window.renderSurveyResponses(surveyId);
-      } else {
-        console.error("renderSurveyResponses function not found in responses.js");
       }
     });
   } else if (path === "/adminDashboard") {
-    // window.renderAdminDashboard();
     loadJS("admin/js/adminDashboard.js", () => {
       if (typeof window.renderAdminDashboard === "function") {
         loadadminDashboardCSS();
         window.renderAdminDashboard();
-      } else {
-        console.error("renderSurveyResponses function not found in responses.js");
       }
     });
   } else {
@@ -168,7 +159,11 @@ function viewSurveys(page = 0) {
         const surveyCard = document.getElementById(`survey-${survey.id}`);
         if (surveyCard) {
           surveyCard.addEventListener("click", () => {
-            window.history.pushState({}, "", `/surveyResponses?id=${survey.id}`);
+            window.history.pushState(
+              {},
+              "",
+              `/surveyResponses?id=${survey.id}`
+            );
             routeHandler();
           });
         }
@@ -264,7 +259,7 @@ function renderJSON(json, parent, preserveExisting = false) {
 }
 window.addEventListener("popstate", (event) => {
   if (window.location.pathname === "/adminDashboard") {
-    loadadminDashboardCSS(); // Load CSS before rendering
+    loadadminDashboardCSS();
     window.renderAdminDashboard();
   } else {
     routeHandler();

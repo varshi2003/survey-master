@@ -14,16 +14,15 @@ function loadSweetAlert() {
 }
 function loadCustomCSS() {
   document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
-   if (link.href.includes("home.css")) {
-     link.remove();
-   }
- });
- const link = document.createElement("link");
- link.rel = "stylesheet";
- link.href = "admin/css/responseDetails.css";
- document.head.appendChild(link);
+    if (link.href.includes("home.css")) {
+      link.remove();
+    }
+  });
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "admin/css/responseDetails.css";
+  document.head.appendChild(link);
 }
-
 
 export function loadResponseDetails(surveyResponseId, surveyId) {
   loadCustomCSS();
@@ -32,7 +31,7 @@ export function loadResponseDetails(surveyResponseId, surveyId) {
 
     const container = document.createElement("div");
     container.className = "responseDetailsContainer";
-    
+
     const title = document.createElement("h1");
     title.textContent = "Survey Response Details";
     container.appendChild(title);
@@ -73,9 +72,6 @@ export function loadResponseDetails(surveyResponseId, surveyId) {
 }
 
 function fetchSurveyResponse(surveyResponseId, surveyId) {
-  
-
-
   if (!surveyResponseId) {
     Swal.fire({
       icon: "warning",
@@ -88,11 +84,11 @@ function fetchSurveyResponse(surveyResponseId, surveyId) {
 
   fetch(`http://localhost:8080/api/survey-responses/${surveyResponseId}`)
     .then((response) => {
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
       return response.json();
     })
     .then((data) => {
-     
       const responseContainer = document.getElementById("response-details");
       responseContainer.innerHTML = "";
 

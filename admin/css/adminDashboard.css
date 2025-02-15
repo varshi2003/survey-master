@@ -1,5 +1,11 @@
-/* body {
-  font-family: Arial, sans-serif;
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+body {
+ 
   margin: 0;
   padding: 0;
   background: linear-gradient(135deg, #e0e7ef, #f8f9fa);
@@ -47,4 +53,4 @@ h1 {
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-} */
+}

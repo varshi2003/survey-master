@@ -57,161 +57,7 @@ setTimeout(() => {
   }
 }, 100);
 
-// function getSurvey(surveyId = null) {
-//   if (!surveyId) {
-//     const params = new URLSearchParams(window.location.hash.split("?")[1]);
-//     surveyId = params.get("id");
-//   }
 
-//   if (!surveyId) {
-//     Swal.fire({
-//       icon: "error",
-//       title: "Survey ID Missing",
-//       text: "Survey ID not found in URL. Please check the link.",
-//     });
-//     return;
-//   }
-
-//   fetch(`http://localhost:8080/api/surveys/${surveyId}`)
-//     .then((response) => {
-//       if (!response.ok) {
-//         throw new Error(`HTTP error! Status: ${response.status}`);
-//       }
-//       return response.json();
-//     })
-//     .then((data) => {
-//       if (!data || !data.questions) {
-//         throw new Error("Invalid survey data format");
-//       }
-
-//       const surveyTitleElement = document.getElementById("survey-title");
-//       if (surveyTitleElement) {
-//         surveyTitleElement.textContent = data.name;
-//       } else {
-//         Swal.fire({
-//           icon: "error",
-//           title: "Survey ID Missing",
-//           text: "Element with id 'survey-title' not found.",
-//         });
-//       }
-
-//       const form = document.getElementById("survey-form");
-//       form.innerHTML = "";
-
-//       const surveyStructure = {
-//         tag: "div",
-//         children: data.questions.map((question, index) => {
-//           let inputElement;
-//           let options = [];
-
-//           switch (question.type) {
-//             case "Paragraph":
-//               inputElement = {
-//                 tag: "textarea",
-//                 attributes: {
-//                   name: `question-${index}`,
-//                   placeholder: question.placeholder,
-//                 },
-//               };
-//               break;
-//             case "MultipleChoice":
-//               options = question.additionalProperties.options.map((option) => ({
-//                 tag: "label",
-//                 children: [
-//                   {
-//                     tag: "input",
-//                     attributes: {
-//                       type: "checkbox",
-//                       name: `multipleChoice-${index}`,
-//                       value: option,
-//                     },
-//                   },
-//                   { tag: "span", text: option },
-//                 ],
-//               }));
-//               break;
-//             case "RadioButton":
-//               options = question.additionalProperties.options.map((option) => ({
-//                 tag: "label",
-//                 children: [
-//                   {
-//                     tag: "input",
-//                     attributes: {
-//                       type: "radio",
-//                       name: `radio-${index}`,
-//                       value: option,
-//                     },
-//                   },
-//                   { tag: "span", text: option },
-//                 ],
-//               }));
-//               break;
-//             case "DropDown":
-//               inputElement = {
-//                 tag: "select",
-//                 attributes: { name: `dropdown-${index}` },
-//                 children: [
-//                   {
-//                     tag: "option",
-//                     attributes: { value: "" },
-//                     text: "Select...",
-//                   },
-//                   ...question.additionalProperties.options.map((option) => ({
-//                     tag: "option",
-//                     attributes: { value: option },
-//                     text: option,
-//                   })),
-//                 ],
-//               };
-//               break;
-//             case "FileUpload":
-//               inputElement = {
-//                 tag: "input",
-//                 attributes: { type: "file", name: `file-${index}` },
-//               };
-//               break;
-//             case "DateAndTime":
-//               inputElement = {
-//                 tag: "input",
-//                 attributes: {
-//                   type: "datetime-local",
-//                   name: `datetime-${index}`,
-//                 },
-//               };
-//               break;
-//             case "Email":
-//               inputElement = {
-//                 tag: "input",
-//                 attributes: {
-//                   type: "email",
-//                   name: `email-${index}`,
-//                   placeholder: question.placeholder,
-//                 },
-//               };
-//               break;
-//           }
-
-//           return {
-//             tag: "div",
-//             attributes: { class: "form-field" },
-//             children: [
-//               { tag: "label", text: `${index + 1}. ${question.question}` },
-//               ...(options.length ? options : [inputElement]),
-//             ],
-//           };
-//         }),
-//       };
-
-//       renderJSON(surveyStructure, form, true);
-//     })
-//     .catch((error) => {
-//       Swal.fire({
-//         icon: "error",
-//         title: "Error Updating Status!",
-//         text: `Failed to update status. Error: ${error.message}`,
-//       });
-//     });
-// }
 function getSurvey(surveyId = null) {
   if (!surveyId) {
     const params = new URLSearchParams(window.location.hash.split("?")[1]);
@@ -227,7 +73,7 @@ function getSurvey(surveyId = null) {
     return;
   }
 
-  // Wait for the survey form to be available before modifying it
+ 
   const waitForElement = (selector, callback, timeout = 1000) => {
     const startTime = Date.now();
     const interval = setInterval(() => {
@@ -259,7 +105,7 @@ function getSurvey(surveyId = null) {
       }
 
       waitForElement("#survey-form", (form) => {
-        form.innerHTML = ""; // Only update the form after it exists
+        form.innerHTML = ""; 
 
         const surveyTitleElement = document.getElementById("survey-title");
         if (surveyTitleElement) {
@@ -418,21 +264,6 @@ function renderJSON(structure, parentElement, clear = false) {
   parentElement.appendChild(createElement(structure));
 }
 
-// window.onload = function () {
-//   renderPage();
-//   setTimeout(() => {
-//     if (document.getElementById("survey-title")) {
-//       getSurvey();
-//     } else {
-//       Swal.fire({
-//         icon: "error",
-//         title: "Error Fetching Surveys",
-//         text: "Element with id 'survey-title' still not found after rendering.",
-//       });
-//     }
-//   }, 100);
-// };
-
 
 window.onpopstate = function () {
   if (window.location.pathname.includes("adminViewSurveys")) {
@@ -463,18 +294,13 @@ function routeHandler() {
     const surveyId = params.get("id");
 
     if (surveyId) {
-      document.body.innerHTML = ""; // Ensure body is cleared before loading script
+      document.body.innerHTML = ""; 
 
       loadScript("admin/js/adminViewForm.js", () => {
         setTimeout(() => {
           if (typeof getSurvey === "function") {
             getSurvey(surveyId);
           } else {
-            // Swal.fire({
-            //   icon: "error",
-            //   title: "Error Fetching Surveys",
-            //   text: `Survey Id is not available`,
-            // });
           }
         }, 300);
       });

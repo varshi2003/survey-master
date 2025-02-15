@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-
 export function loadSurveyForm(surveyId) {
   if (!surveyId) {
     
@@ -83,9 +82,6 @@ function getSurvey(surveyId) {
     });
     return;
   }
-
-  
-
   fetch(`http://localhost:8080/api/surveys/${surveyId}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
@@ -201,8 +197,6 @@ function getSurvey(surveyId) {
       })
     );
 }
-
-
 
 function validateForm() {
   let valid = true;

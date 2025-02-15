@@ -68,10 +68,10 @@ body {
   margin-top: 8px;
 }
 .accept {
-  color: green;
+  color: green !important;
 }
 .reject {
-  color: red;
+  color: red !important;
 }
 .response-container {
   display: flex;
