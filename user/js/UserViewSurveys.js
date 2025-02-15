@@ -1,5 +1,3 @@
-
-
 function htmlBuilder(elements, parent) {
   const listOfElements = [];
   const fragment = document.createDocumentFragment();
@@ -49,11 +47,10 @@ function htmlBuilder(elements, parent) {
   return listOfElements;
 }
 
-
 const domJson = [
   {
     tag: "div",
-    class: "header",
+    class: "view-surveys-header",
     children: [
       {
         tag: "h1",
@@ -63,7 +60,7 @@ const domJson = [
   },
   {
     tag: "div",
-    attributes: { id: "survey-container", class: "container" },
+    attributes: { id: "survey-container", class: "admin-survey-container" },
   },
   {
     tag: "div",
@@ -94,7 +91,9 @@ let currentPage = 0;
 const pageSize = 3;
 
 function viewSurveys(page = 0) {
-  fetch(`http://localhost:8080/api/surveys/surveyList?page=${page}&size=${pageSize}`)
+  fetch(
+    `http://localhost:8080/api/surveys/surveyList?page=${page}&size=${pageSize}`
+  )
     .then((response) => response.json())
     .then((data) => {
       if (!data.content || !Array.isArray(data.content)) return;
@@ -105,17 +104,45 @@ function viewSurveys(page = 0) {
       data.content.forEach((survey) => {
         const surveyCard = {
           tag: "div",
-          class: "card",
-          text: survey.name,
-          attributes: {
-            onclick: `navigateToSurvey('${survey.id}')`,
-          },
+          class: "card-user-view-surveys",
+          children: [],
         };
+
+        if (survey.imageUrl) {
+          surveyCard.children.push({
+            tag: "img",
+            class: "survey-image",
+            attributes: {
+              src: survey.imageUrl,
+              alt: survey.name,
+            },
+          });
+        }
+
+        surveyCard.children.push({
+          tag: "h3",
+          class: "survey-title",
+          text: survey.name,
+        });
+
+        if (survey.description) {
+          surveyCard.children.push({
+            tag: "p",
+            class: "survey-description",
+            text: survey.description,
+          });
+        }
+
+        surveyCard.attributes = {
+          onclick: `navigateToSurvey('${survey.id}')`,
+        };
+
         htmlBuilder([surveyCard], surveyContainer);
       });
 
       updatePagination(data);
     })
+
     .catch((error) => {
       Swal.fire({
         icon: "error",

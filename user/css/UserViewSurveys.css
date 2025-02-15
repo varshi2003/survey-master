@@ -1,8 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-
-
 * {
   margin: 0;
   padding: 0;
@@ -19,19 +17,19 @@ body {
   background: linear-gradient(135deg, #e0e7ef, #f8f9fa);
 }
 
-.header {
+.view-surveys-header {
   margin-bottom: 25px;
   text-align: center;
 }
 
-.header h1 {
+.view-surveys-header h1 {
   font-size: 2.2rem;
   font-weight: 600;
   letter-spacing: 1px;
   color: #091133;
 }
 
-.container {
+.admin-survey-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 25px;
@@ -39,14 +37,14 @@ body {
   max-width: 900px;
 }
 
-.card {
+.card-user-view-surveys {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 30px;
-  width: 270px;
-  height: 180px;
+  width: 300px;
+  height: 250px;
   line-height: 26px;
   background-color: #ffffff;
   border-radius: 16px;
@@ -55,17 +53,17 @@ body {
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-.card:hover {
+.card-user-view-surveys:hover {
   transform: translateY(-6px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-.card h3 {
+.card-user-view-surveys h3 {
   font-size: 1.6rem;
   font-weight: 500;
   color: #091133;
   text-align: center;
-  margin-top: 15px;
+  margin-top: 8px;
 }
 .pagination {
   display: flex;
@@ -112,3 +110,22 @@ body {
   opacity: 0.6;
 }
 
+.survey-image {
+  width: 45%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+}
+
+.survey-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.survey-description {
+  margin-left: 15px;
+  font-size:16px;
+  color: #005A9C;
+  margin-bottom: 10px;
+}
