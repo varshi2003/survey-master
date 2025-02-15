@@ -1,3 +1,14 @@
+function loadadminDashboardCSS() {
+  const existingLink = document.getElementById("dynamic-css");
+  if (!existingLink) {
+    const link = document.createElement("link");
+    link.id = "dynamic-css";
+    link.rel = "stylesheet";
+    link.href = "home.css"; // Ensure the correct path to home.css
+    document.head.appendChild(link);
+  }
+}
+
 function loadSweetAlert(callback) {
   const script = document.createElement("script");
   script.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
@@ -19,6 +30,29 @@ function loadCustomCSS() {
 function renderAdminCreateForm() {
   loadCustomCSS();
   loadSweetAlert();
+
+  // const buttonsContainer = document.getElementById("buttons-container");
+  // if (buttonsContainer) {
+  //   document.body.appendChild(buttonsContainer); // Reattach the buttons
+  // } else {
+  //   // If buttonsContainer doesn't exist, create it again
+  //   const newButtonsContainer = document.createElement("div");
+  //   newButtonsContainer.id = "buttons-container";
+
+  //   const backBtn = document.createElement("button");
+  //   backBtn.id = "backBtn";
+  //   backBtn.textContent = "Back";
+  //   backBtn.addEventListener("click", () => history.back());
+
+  //   const nextBtn = document.createElement("button");
+  //   nextBtn.id = "nextBtn";
+  //   nextBtn.textContent = "Next";
+  //   nextBtn.addEventListener("click", () => history.forward());
+
+  //   newButtonsContainer.appendChild(backBtn);
+  //   newButtonsContainer.appendChild(nextBtn);
+  //   document.body.appendChild(newButtonsContainer);
+  // }
 
   const app = document.createElement("div");
   app.id = "app";
@@ -540,4 +574,23 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSweetAlert(() => {
     renderAdminCreateForm();
   });
+});
+
+// window.addEventListener("load", () => {
+//   document.getElementById("backBtn").addEventListener("click", () => {
+//     history.back(); // Navigate back
+//   });
+
+//   document.getElementById("nextBtn").addEventListener("click", () => {
+//     history.forward(); // Navigate forward
+//   });
+// });
+
+window.addEventListener("popstate", (event) => {
+  if (window.location.pathname === "/adminDashboard") {
+    loadadminDashboardCSS(); // Load CSS before rendering
+    window.renderAdminDashboard();
+  } else {
+    routeHandler();
+  }
 });

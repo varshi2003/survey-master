@@ -46,6 +46,37 @@ function htmlBuilder(elements, parent) {
 
   return listOfElements;
 }
+function loadViewSurveysCSS() {
+  const existingLink = document.getElementById("dynamic-css");
+  if (!existingLink) {
+    const link = document.createElement("link");
+    link.id = "dynamic-css";
+    link.rel = "stylesheet";
+    link.href = "admin/css/adminViewSurveys.css"; // Ensure the correct path to home.css
+    document.head.appendChild(link);
+  }
+}
+function loadCreateFormCSS() {
+  const existingLink = document.getElementById("dynamic-css");
+  if (!existingLink) {
+    const link = document.createElement("link");
+    link.id = "dynamic-css";
+    link.rel = "stylesheet";
+    link.href = "admin/css/adminCreateForm.css"; // Ensure the correct path to home.css
+    document.head.appendChild(link);
+  }
+}
+function loadViewResponseDashboardCSS() {
+  const existingLink = document.getElementById("dynamic-css");
+  if (!existingLink) {
+    const link = document.createElement("link");
+    link.id = "dynamic-css";
+    link.rel = "stylesheet";
+    link.href = "admin/css/surveyResponseDashboard.css"; // Ensure the correct path to home.css
+    document.head.appendChild(link);
+  }
+}
+
 
 window.renderAdminDashboard = function () {
   document.body.innerHTML = "";
@@ -113,8 +144,9 @@ function routeHandler() {
   document.body.innerHTML = "";
 
   const routes = {
-    "/UserViewSurveys": () =>
-      loadJS("user/js/UserViewSurveys.js", renderUserViewSurveys),
+    "/UserViewSurveys": () => {
+      // loadViewSurveysCSS()
+      loadJS("user/js/UserViewSurveys.js", renderUserViewSurveys) },
     "/adminDashboard": () =>
       loadJS("admin/js/adminDashboard.js", () =>
         window.renderAdminDashboard?.()
@@ -123,14 +155,16 @@ function routeHandler() {
       loadJS("admin/js/adminViewSurveys.js", () =>
         window.renderAdminViewSurveys?.()
       ),
-    "/adminCreateForm": () =>
+    "/adminCreateForm": () =>{
+      // loadCreateFormCSS();
       loadJS("admin/js/adminCreateForm.js", () =>
         window.renderAdminCreateForm?.()
-      ),
-    "/surveyResponseDashboard": () =>
+      )},
+    "/surveyResponseDashboard": () =>{
+      // loadViewResponseDashboardCSS();
       loadJS("admin/js/surveyResponseDashboard.js", () =>
         window.renderSurveyResponseDashboard?.()
-      ),
+      )},
   };
 
   if (routes[path]) {
@@ -139,6 +173,28 @@ function routeHandler() {
     createHomePage();
   }
 }
+window.addEventListener("popstate", (event) => {
+  if (window.location.pathname === "/adminDashboard") {
+    loadadminDashboardCSS(); // Load CSS before rendering
+    window.renderAdminDashboard();
+  } 
+  else  if (window.location.pathname === "/UserViewSurveys") {
+    loadViewSurveysCSS(); // Load CSS before rendering
+    window.renderUserViewSurveys();
+  } 
+  else  if (window.location.pathname === "/adminCreateForm") {
+    loadCreateFormCSS(); // Load CSS before rendering
+    window.renderAdminCreateForm();
+  } 
+  else  if (window.location.pathname === "/surveyResponseDashboard") {
+    loadViewResponseDashboardCSS(); // Load CSS before rendering
+    window.renderSurveyResponseDashboard();
+  } 
+  else {
+    routeHandler();
+  }
+ 
+});
 
 function loadJS(src, callback) {
   const script = document.createElement("script");

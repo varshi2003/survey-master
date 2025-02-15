@@ -1,17 +1,44 @@
-function loadCustomCSS() {
-  document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
-   if (link.href.includes("home.css")) {
-     link.remove();
-   }
- });
- const link = document.createElement("link");
- link.rel = "stylesheet";
- link.href = "admin/css/surveyResponseDashboard.css";
- document.head.appendChild(link);
+function loadadminDashboardCSS() {
+  const existingLink = document.getElementById("dynamic-css");
+  if (!existingLink) {
+    const link = document.createElement("link");
+    link.id = "dynamic-css";
+    link.rel = "stylesheet";
+    link.href = "home.css"; // Ensure the correct path to home.css
+    document.head.appendChild(link);
+  }
 }
 
-function renderSurveyResponseDashboard()
-{
+function loadCustomCSS() {
+  document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
+    if (link.href.includes("home.css")) {
+      link.remove();
+    }
+  });
+
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "admin/css/surveyResponseDashboard.css";
+  document.head.appendChild(link);
+}
+
+function getSurveyStructure() {
+  return {
+    tag: "div",
+    attributes: { id: "survey-container" },
+    children: [],
+  };
+}
+
+function getPaginationStructure() {
+  return {
+    tag: "div",
+    attributes: { id: "pagination" },
+    children: [],
+  };
+}
+
+function renderSurveyResponseDashboard() {
   loadCustomCSS();
   document.body.innerHTML = "";
 
@@ -32,28 +59,22 @@ function renderSurveyResponseDashboard()
   pagination.className = "pagination";
   document.body.appendChild(pagination);
 
+  // Ensure we update history to track navigation properly
+  if (window.location.pathname !== "/surveyResponseDashboard") {
+    window.history.pushState({}, "", "/surveyResponseDashboard");
+  }
+
   viewSurveys();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  routeHandler();  
 
-  if (window.location.pathname === "/surveyResponseDashboard") {
-    renderSurveyResponseDashboard();
-  }
-});
+
 function loadJS(src, callback) {
- 
   const script = document.createElement("script");
   script.src = src;
-  script.onload = () => {
-    
-    callback();
-  };
- 
+  script.onload = callback;
   document.body.appendChild(script);
 }
-
 
 function routeHandler() {
   const path = window.location.pathname;
@@ -63,14 +84,26 @@ function routeHandler() {
   document.body.innerHTML = "";
 
   if (path === "/surveyResponses" && surveyId) {
+    console.log("Loading responses.js for surveyId:", surveyId);
     loadJS("admin/js/responses.js", () => {
       if (typeof window.renderSurveyResponses === "function") {
         window.renderSurveyResponses(surveyId);
+      } else {
+        console.error("renderSurveyResponses function not found in responses.js");
       }
-     
+    });
+  } else if (path === "/adminDashboard") {
+    // window.renderAdminDashboard();
+    loadJS("admin/js/adminDashboard.js", () => {
+      if (typeof window.renderAdminDashboard === "function") {
+        loadadminDashboardCSS();
+        window.renderAdminDashboard();
+      } else {
+        console.error("renderSurveyResponses function not found in responses.js");
+      }
     });
   } else {
-    viewSurveys();
+    renderSurveyResponseDashboard();
   }
 }
 
@@ -103,7 +136,7 @@ function viewSurveys(page = 0) {
       if (!Array.isArray(surveys)) {
         return;
       }
-
+      const surveyStructure = getSurveyStructure();
       surveyStructure.children = surveys.map((survey) => ({
         tag: "div",
         attributes: { class: "card", id: `survey-${survey.id}` },
@@ -126,27 +159,34 @@ function viewSurveys(page = 0) {
             ],
           },
         ],
-        events: {
-          click: () => {
-            window.history.pushState({}, "", `/surveyResponses?id=${survey.id}`);
-            routeHandler();
-          },
-        },
       }));
 
       renderJSON(surveyStructure, document.getElementById("survey-container"));
+
+      // Attach click event listeners after rendering
+      surveys.forEach((survey) => {
+        const surveyCard = document.getElementById(`survey-${survey.id}`);
+        if (surveyCard) {
+          surveyCard.addEventListener("click", () => {
+            window.history.pushState({}, "", `/surveyResponses?id=${survey.id}`);
+            routeHandler();
+          });
+        }
+      });
+
       updatePagination(data);
     })
     .catch((error) => {
       Swal.fire({
         icon: "error",
-        title: "Error Updating Status!",
-        text: `Failed to update status. Error: ${error.message}`,
+        title: "Error Loading Surveys",
+        text: `Failed to load surveys. Error: ${error.message}`,
       });
     });
 }
 
 function updatePagination(data) {
+  const paginationStructure = getPaginationStructure();
   paginationStructure.children = [];
 
   if (data.totalPages > 1) {
@@ -188,33 +228,45 @@ function updatePagination(data) {
   renderJSON(paginationStructure, document.getElementById("pagination"));
 }
 
-
-
 function renderJSON(json, parent, preserveExisting = false) {
   if (!preserveExisting) {
     parent.innerHTML = "";
   }
+
   json.children.forEach((element) => {
     let existingElement = document.getElementById(element.attributes?.id);
     let el = existingElement || document.createElement(element.tag);
+
     if (element.attributes) {
       Object.entries(element.attributes).forEach(([key, value]) =>
         el.setAttribute(key, value)
       );
     }
+
     if (element.text) {
       el.textContent = element.text;
     }
+
     if (element.events && !existingElement) {
       Object.entries(element.events).forEach(([event, handler]) =>
         el.addEventListener(event, handler)
       );
     }
+
     if (element.children) {
       renderJSON({ children: element.children }, el, preserveExisting);
     }
+
     if (!existingElement) {
       parent.appendChild(el);
     }
   });
 }
+window.addEventListener("popstate", (event) => {
+  if (window.location.pathname === "/adminDashboard") {
+    loadadminDashboardCSS(); // Load CSS before rendering
+    window.renderAdminDashboard();
+  } else {
+    routeHandler();
+  }
+});

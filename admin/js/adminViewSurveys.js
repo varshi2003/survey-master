@@ -1,9 +1,20 @@
-if (!window.surveyStructure) {
-  window.surveyStructure = [];
+// if (!window.surveyStructure) {
+//   window.surveyStructure = [];
+// }
+function loadadminDashboardCSS() {
+  const existingLink = document.getElementById("dynamic-css");
+  if (!existingLink) {
+    const link = document.createElement("link");
+    link.id = "dynamic-css";
+    link.rel = "stylesheet";
+    link.href = "home.css"; // Ensure the correct path to home.css
+    document.head.appendChild(link);
+  }
 }
 
 window.renderAdminViewSurveys = function () {
   document.body.innerHTML = "";
+
   const link = document.createElement("link");
   link.rel = "stylesheet";
   link.type = "text/css";
@@ -107,11 +118,11 @@ function viewSurveys(page = 0) {
     })
     .catch((error) => {
     
-      Swal.fire({
-        icon: "error",
-        title: "Error Fetching Surveys",
-        text: `Failed to load surveys. Error: ${error.message}`,
-      });
+    //   Swal.fire({
+    //     icon: "error",
+    //     title: "Error Fetching Surveys",
+    //     text: `Failed to load surveys. Error: ${error.message}`,
+    //   });
     });
 }
 
@@ -220,3 +231,12 @@ window.addEventListener("hashchange", routeHandler);
 window.addEventListener("load", routeHandler);
 
 routeHandler();
+
+window.addEventListener("popstate", (event) => {
+  if (window.location.pathname === "/adminDashboard") {
+    loadadminDashboardCSS(); // Load CSS before rendering
+    window.renderAdminDashboard();
+  } else {
+    routeHandler();
+  }
+});

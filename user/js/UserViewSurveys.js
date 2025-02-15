@@ -91,6 +91,7 @@ let currentPage = 0;
 const pageSize = 3;
 
 function viewSurveys(page = 0) {
+  console.log("ViewSurveys() called");
   fetch(
     `http://localhost:8080/api/surveys/surveyList?page=${page}&size=${pageSize}`
   )
@@ -100,6 +101,7 @@ function viewSurveys(page = 0) {
 
       const surveyContainer = document.getElementById("survey-container");
       surveyContainer.innerHTML = "";
+      surveyContainer.classList.add("survey-grid");
 
       data.content.forEach((survey) => {
         const surveyCard = {
