@@ -1,3 +1,42 @@
+const store = (() => {
+  let state = {};
+  let listeners = {};
+
+  return {
+    getState: (key) => (key ? state[key] : { ...state }),
+
+    setState: (key, value) => {
+      state[key] = value;
+      if (listeners[key]) {
+        listeners[key].forEach((callback) => callback(value));
+      }
+    },
+
+    removeState: (key) => {
+      delete state[key];
+      if (listeners[key]) {
+        listeners[key].forEach((callback) => callback(undefined));
+      }
+    },
+
+    subscribe: (key, callback) => {
+      if (!listeners[key]) {
+        listeners[key] = [];
+      }
+      listeners[key].push(callback);
+    },
+
+    unsubscribe: (key, callback) => {
+      if (listeners[key]) {
+        listeners[key] = listeners[key].filter((cb) => cb !== callback);
+      }
+    },
+  };
+})();
+
+
+
+
 export function htmlBuilder(elements, parent) {
   const listOfElements = [];
   const fragment = document.createDocumentFragment();
@@ -240,3 +279,11 @@ function renderUserViewSurveys() {
     showError("viewSurveys function not loaded properly.");
   }
 }
+
+store.subscribe("userRole", (newRole) => {
+  if (newRole === "Admin") {
+    navigateTo("/adminDashboard");
+  } else if (newRole === "User") {
+    navigateTo("/UserViewSurveys");
+  }
+});
