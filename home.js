@@ -217,7 +217,6 @@ function routeHandler() {
 window.onpopstate = routeHandler;
 
 function renderUserViewSurveys() {
- 
   loadCSS("user/css/UserViewSurveys.css");
 
   const domJson = [

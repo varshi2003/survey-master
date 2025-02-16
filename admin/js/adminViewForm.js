@@ -92,7 +92,7 @@ function getSurvey(surveyId = null) {
     }, 50);
   };
 
-  fetch(`http://localhost:8080/api/surveys/${surveyId}`)
+  fetch(`${window.CONFIG.HOST_URL}/api/surveys/${surveyId}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

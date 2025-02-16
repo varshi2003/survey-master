@@ -79,7 +79,7 @@ function getSurvey(surveyId) {
     });
     return;
   }
-  fetch(`http://localhost:8080/api/surveys/${surveyId}`, {
+  fetch(`${window.CONFIG.HOST_URL}/api/surveys/${surveyId}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   })
@@ -301,7 +301,7 @@ function submitSurvey() {
     }
   });
 
-  fetch("http://localhost:8080/api/survey-responses", {
+  fetch(`${window.CONFIG.HOST_URL}/api/survey-responses`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ surveyId: surveyData.id, responses }),

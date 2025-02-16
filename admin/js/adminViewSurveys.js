@@ -50,17 +50,19 @@ function htmlBuilder(elements, parent) {
   return listOfElements;
 }
 
-function loadAdminDashboardCSS() {
-  if (!document.getElementById("dynamic-css")) {
+function removeOldCSSAndJS() {
+  document
+    .querySelectorAll("link[id^='admin-'], script[id^='admin-']")
+    .forEach((elem) => elem.remove());
+}
+
+function loadCSS(href, id) {
+  if (!document.getElementById(id)) {
     htmlBuilder(
       [
         {
           tag: "link",
-          attributes: {
-            id: "dynamic-css",
-            rel: "stylesheet",
-            href: "admin/css/adminDashboard.css",
-          },
+          attributes: { id, rel: "stylesheet", href: href },
         },
       ],
       document.head
@@ -68,19 +70,26 @@ function loadAdminDashboardCSS() {
   }
 }
 
+function loadScript(src, id, callback) {
+  if (!document.getElementById(id)) {
+    const script = document.createElement("script");
+    script.id = id;
+    script.src = src;
+    script.onload = callback;
+    document.body.appendChild(script);
+  } else if (callback) {
+    callback();
+  }
+}
+
 window.renderAdminViewSurveys = function () {
+  removeOldCSSAndJS();
+  loadCSS("admin/css/adminViewSurveys.css", "admin-view-surveys-css");
+
   document.body.innerHTML = "";
 
   htmlBuilder(
     [
-      {
-        tag: "link",
-        attributes: {
-          rel: "stylesheet",
-          type: "text/css",
-          href: "admin/css/adminViewSurveys.css",
-        },
-      },
       {
         tag: "div",
         class: "view-surveys-header",
@@ -104,12 +113,15 @@ window.renderAdminViewSurveys = function () {
   viewSurveys();
 };
 
-let currentPage = 0;
-const pageSize = 3;
+// Ensure pageSize is defined only once
+window.pageSize = window.pageSize || 3;
+window.currentPage = window.currentPage || 0;
 
 function viewSurveys(page = 0) {
+  window.currentPage = page;
+
   fetch(
-    `http://localhost:8080/api/surveys/surveyList?page=${page}&size=${pageSize}`,
+    `${window.CONFIG.HOST_URL}/api/surveys/surveyList?page=${window.currentPage}&size=${window.pageSize}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -118,6 +130,8 @@ function viewSurveys(page = 0) {
     .then((response) => response.json())
     .then((data) => {
       const surveyContainer = document.getElementById("survey-container");
+      if (!surveyContainer) return;
+
       surveyContainer.innerHTML = data?.content?.length
         ? ""
         : "<p>No surveys available.</p>";
@@ -156,24 +170,26 @@ function viewSurveys(page = 0) {
         });
       }
       updatePagination(data);
-    })
+    });
 }
 
 function updatePagination(data) {
   const pagination = document.getElementById("pagination");
+  if (!pagination) return;
   pagination.innerHTML = "";
+
   if (data.totalPages > 1) {
     const paginationElements = [];
 
-    if (currentPage > 0) {
+    if (window.currentPage > 0) {
       paginationElements.push({
         tag: "button",
         class: "pagination-button",
         text: "Prev",
         events: {
           click: () => {
-            currentPage--;
-            viewSurveys(currentPage);
+            window.currentPage--;
+            viewSurveys(window.currentPage);
           },
         },
       });
@@ -182,18 +198,18 @@ function updatePagination(data) {
     paginationElements.push({
       tag: "span",
       class: "page-info",
-      text: `Page ${currentPage + 1} of ${data.totalPages}`,
+      text: `Page ${window.currentPage + 1} of ${data.totalPages}`,
     });
 
-    if (currentPage < data.totalPages - 1) {
+    if (window.currentPage < data.totalPages - 1) {
       paginationElements.push({
         tag: "button",
         class: "pagination-button",
         text: "Next",
         events: {
           click: () => {
-            currentPage++;
-            viewSurveys(currentPage);
+            window.currentPage++;
+            viewSurveys(window.currentPage);
           },
         },
       });
@@ -219,6 +235,8 @@ function updatePagination(data) {
 }
 
 function routeHandler() {
+  removeOldCSSAndJS();
+
   const hash = window.location.hash;
   if (hash.startsWith("#/adminViewForm")) {
     const params = new URLSearchParams(hash.split("?")[1]);
@@ -231,35 +249,26 @@ function routeHandler() {
 
 function loadAdminViewForm(surveyId) {
   document.body.innerHTML = "";
-  if (!window.adminViewFormLoaded) {
-    htmlBuilder(
-      [
-        {
-          tag: "script",
-          attributes: { src: "admin/js/adminViewForm.js" },
-          events: {
-            load: () => {
-              window.adminViewFormLoaded = true;
-              setTimeout(() => getSurvey?.(surveyId) ?? 300);
-            },
-          },
-        },
-      ],
-      document.body
-    );
-  } else {
-    setTimeout(() => getSurvey(surveyId), 200);
-  }
+  loadScript("admin/js/adminViewForm.js", "admin-view-form-js", () => {
+    if (typeof getSurvey === "function") {
+      getSurvey(surveyId);
+    }
+  });
 }
 
 window.addEventListener("hashchange", routeHandler);
 window.addEventListener("load", routeHandler);
-routeHandler();
 
 window.addEventListener("popstate", () => {
+  removeOldCSSAndJS();
+
   if (window.location.pathname === "/adminDashboard") {
-    loadAdminDashboardCSS();
-    window.renderAdminDashboard();
+    loadCSS("admin/css/adminDashboard.css", "admin-dashboard-css");
+    loadScript("admin/js/adminDashboard.js", "admin-dashboard-js", () => {
+      if (typeof renderAdminDashboard === "function") {
+        renderAdminDashboard();
+      }
+    });
   } else {
     routeHandler();
   }

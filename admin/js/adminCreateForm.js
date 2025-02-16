@@ -453,7 +453,7 @@ function renderAdminCreateForm() {
       },
     });
 
-    fetch("http://localhost:8080/api/surveys", {
+    fetch(`${window.CONFIG.HOST_URL}/api/surveys`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

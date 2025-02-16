@@ -54,16 +54,6 @@ export function loadResponseDetails(surveyResponseId, surveyId) {
     rejectButton.textContent = "Reject";
     btnContainer.appendChild(rejectButton);
 
-    // const backButton = document.createElement("a");
-    // backButton.href = "javascript:void(0)";
-    // backButton.className = "back-btn";
-    // backButton.textContent = "Back to Responses";
-    // backButton.addEventListener("click", () => {
-    //   window.history.pushState({}, "", "/surveyResponses");
-    //   routeHandler();
-    // });
-    // btnContainer.appendChild(backButton);
-
     container.appendChild(btnContainer);
     document.body.appendChild(container);
 
@@ -82,7 +72,7 @@ function fetchSurveyResponse(surveyResponseId, surveyId) {
     return;
   }
 
-  fetch(`http://localhost:8080/api/survey-responses/${surveyResponseId}`)
+  fetch(`${window.CONFIG.HOST_URL}/api/survey-responses/${surveyResponseId}`)
     .then((response) => {
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -118,7 +108,7 @@ function fetchSurveyResponse(surveyResponseId, surveyId) {
       });
 
       fetch(
-        `http://localhost:8080/api/result-dashboard/status/${surveyId}/${surveyResponseId}`
+        `${window.CONFIG.HOST_URL}/api/result-dashboard/status/${surveyId}/${surveyResponseId}`
       )
         .then((response) => response.text())
         .then((status) => {
@@ -171,7 +161,7 @@ function setupActionButtons(surveyId, surveyResponseId, status) {
     acceptButton.addEventListener("click", () => {
       if (acceptButton.disabled) return;
 
-      fetch("http://localhost:8080/api/result-dashboard/accept", {
+      fetch(`${window.CONFIG.HOST_URL}/api/result-dashboard/accept`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ surveyId, surveyResponseId }),
@@ -206,7 +196,7 @@ function setupActionButtons(surveyId, surveyResponseId, status) {
     rejectButton.addEventListener("click", () => {
       if (rejectButton.disabled) return;
 
-      fetch("http://localhost:8080/api/result-dashboard/reject", {
+      fetch(`${window.CONFIG.HOST_URL}/api/result-dashboard/reject`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ surveyId, surveyResponseId }),

@@ -157,14 +157,17 @@ window.paginationStructure = window.paginationStructure || {
   attributes: { id: "pagination" },
   children: [],
 };
+if (typeof window.currentPage === "undefined") {
+  window.currentPage = 0;
+}
 
 if (typeof window.pageSize === "undefined") {
-  window.pageSize = 6;
+  window.pageSize = 3;
 }
 
 function viewSurveys(page = 0) {
   fetch(
-    `http://localhost:8080/api/surveys/surveyList?page=${page}&size=${pageSize}`,
+    `${window.CONFIG.HOST_URL}/api/surveys/surveyList?page=${page}&size=${pageSize}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -229,46 +232,39 @@ function viewSurveys(page = 0) {
 }
 
 function updatePagination(data) {
-  const paginationStructure = getPaginationStructure();
-  paginationStructure.children = [];
+  const pagination = document.getElementById("pagination");
+  pagination.innerHTML = "";
 
   if (data.totalPages > 1) {
-    if (currentPage > 0) {
-      paginationStructure.children.push({
-        tag: "button",
-        attributes: { class: "pagination-response-button" },
-        text: "Prev",
-        events: {
-          click: () => {
-            currentPage--;
-            viewSurveys(currentPage);
-          },
-        },
+    if (window.currentPage > 0) {
+      const prevButton = document.createElement("button");
+      prevButton.className = "pagination-response-button";
+      prevButton.textContent = "Prev";
+      prevButton.addEventListener("click", () => {
+        window.currentPage--;
+        viewSurveys(window.currentPage);
       });
+      pagination.appendChild(prevButton);
     }
 
-    paginationStructure.children.push({
-      tag: "span",
-      attributes: { class: "page-info" },
-      text: `Page ${currentPage + 1} of ${data.totalPages}`,
-    });
+    const pageInfo = document.createElement("span");
+    pageInfo.className = "page-info";
+    pageInfo.textContent = `Page ${window.currentPage + 1} of ${
+      data.totalPages
+    }`;
+    pagination.appendChild(pageInfo);
 
-    if (currentPage < data.totalPages - 1) {
-      paginationStructure.children.push({
-        tag: "button",
-        attributes: { class: "pagination-response-button" },
-        text: "Next",
-        events: {
-          click: () => {
-            currentPage++;
-            viewSurveys(currentPage);
-          },
-        },
+    if (window.currentPage < data.totalPages - 1) {
+      const nextButton = document.createElement("button");
+      nextButton.className = "pagination-response-button";
+      nextButton.textContent = "Next";
+      nextButton.addEventListener("click", () => {
+        window.currentPage++;
+        viewSurveys(window.currentPage);
       });
+      pagination.appendChild(nextButton);
     }
   }
-
-  renderJSON(paginationStructure, document.getElementById("pagination"));
 }
 
 function renderJSON(json, parent, preserveExisting = false) {

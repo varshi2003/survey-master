@@ -50,7 +50,7 @@ window.renderSurveyResponses = function (surveyId) {
   }
 
   fetch(
-    `http://localhost:8080/api/survey-responses/form-names?surveyId=${surveyId}`,
+    `${window.CONFIG.HOST_URL}/api/survey-responses/form-names?surveyId=${surveyId}`,
     {
       method: "GET",
       headers: {
@@ -203,15 +203,11 @@ function renderJSON(json, parent, preserveExisting = false) {
   });
 }
 
-window.responseStructure = window.responseStructure || {  tag: "div",
+window.responseStructure = window.responseStructure || {
+  tag: "div",
   attributes: { id: "response-container" },
-  children: [], };
-
-// const responseStructure = {
-//   tag: "div",
-//   attributes: { id: "response-container" },
-//   children: [],
-// };
+  children: [],
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
