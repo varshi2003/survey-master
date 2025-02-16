@@ -393,16 +393,69 @@ function renderAdminCreateForm() {
   }
 
   function editQuestion(index) {
-    const newQuestion = prompt(
-      "Edit your question:",
-      questions[index].question
-    );
+   
+    event?.preventDefault();
 
-    if (newQuestion !== null) {
-      questions[index].question = newQuestion;
-      renderQuestions();
-    }
-  }
+    const modal = document.createElement("div");
+    modal.style.position = "fixed";
+    modal.style.top = "20%";
+    modal.style.left = "50%";
+    modal.style.transform = "translate(-50%, -50%)";
+    modal.style.background = "white";
+    modal.style.padding = "20px";
+    modal.style.boxShadow = "0px 0px 10px rgba(0, 0, 0, 0.2)";
+    modal.style.borderRadius = "5px";
+    modal.style.zIndex = "1000";
+
+    const label = document.createElement("label");
+    label.textContent = "Edit your question:";
+    label.style.display = "block";
+    label.style.marginBottom = "5px";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = questions[index].question;
+    input.style.width = "100%";
+    input.style.marginBottom = "2px";
+    input.style.marginLeft = "-10px";
+
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "Save";
+    saveButton.style.marginRight = "10px";
+    saveButton.style.backgroundColor = "green";
+    saveButton.style.color = "white";
+    saveButton.type = "button"; 
+
+    const cancelButton = document.createElement("button");
+    cancelButton.textContent = "Cancel";
+    cancelButton.style.backgroundColor = "red";
+    cancelButton.style.color = "white";
+    cancelButton.type = "button"; 
+
+  
+    modal.appendChild(label);
+    modal.appendChild(input);
+    modal.appendChild(saveButton);
+    modal.appendChild(cancelButton);
+
+    document.body.appendChild(modal);
+
+    
+    saveButton.addEventListener("click", (event) => {
+        event.preventDefault(); 
+        questions[index].question = input.value;
+        document.body.removeChild(modal);
+        renderQuestions();
+    });
+
+    cancelButton.addEventListener("click", (event) => {
+        event.preventDefault(); 
+        document.body.removeChild(modal);
+    });
+
+    
+    modal.addEventListener("submit", (event) => event.preventDefault());
+}
 
   function removeQuestion(index) {
     if (confirm("Are you sure you want to delete this question?")) {
