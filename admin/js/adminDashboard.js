@@ -46,6 +46,17 @@ function htmlBuilder(elements, parent) {
 
   return listOfElements;
 }
+function loadadminDashboardCSS() {
+  const existingLink = document.getElementById("dynamic-css");
+  if (!existingLink) {
+    const link = document.createElement("link");
+    link.id = "dynamic-css";
+    link.rel = "stylesheet";
+    link.href = "admin/css/adminDashboard.css"; 
+    document.head.appendChild(link);
+  }
+}
+
 function loadViewSurveysCSS() {
   const existingLink = document.getElementById("dynamic-css");
   if (!existingLink) {

@@ -1,4 +1,3 @@
-
 function loadSweetAlert(callback) {
   const script = document.createElement("script");
   script.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
@@ -29,10 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
 export function loadSurveyForm(surveyId) {
   if (!surveyId) {
-    
     Swal.fire({
       icon: "error",
       title: "Invalid Survey",
@@ -87,7 +84,6 @@ function getSurvey(surveyId) {
     headers: { "Content-Type": "application/json" },
   })
     .then((response) => {
-    
       return response.json();
     })
     .then((data) => {
@@ -310,15 +306,14 @@ function submitSurvey() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ surveyId: surveyData.id, responses }),
   })
-   .then(() => {
-    
+    .then(() => {
       Swal.fire({
         icon: "success",
         title: "Success!",
         text: "Survey Saved successfully!",
         confirmButtonColor: "#3085d6",
         confirmButtonText: "OK",
-      })
+      });
     })
     .catch(() =>
       Swal.fire({

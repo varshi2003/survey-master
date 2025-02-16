@@ -203,11 +203,15 @@ function renderJSON(json, parent, preserveExisting = false) {
   });
 }
 
-const responseStructure = {
-  tag: "div",
+window.responseStructure = window.responseStructure || {  tag: "div",
   attributes: { id: "response-container" },
-  children: [],
-};
+  children: [], };
+
+// const responseStructure = {
+//   tag: "div",
+//   attributes: { id: "response-container" },
+//   children: [],
+// };
 
 document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);

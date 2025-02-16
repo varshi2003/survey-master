@@ -157,7 +157,6 @@ function viewSurveys(page = 0) {
       }
       updatePagination(data);
     })
-    .catch((error) => console.error("Error fetching surveys:", error));
 }
 
 function updatePagination(data) {

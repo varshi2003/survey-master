@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadCSS(href) {
-  // Remove existing CSS before loading new one
   document.querySelectorAll("link[rel='stylesheet']").forEach((link) => {
     if (
       link.href.includes("user/css") ||

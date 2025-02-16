@@ -8,6 +8,34 @@ function loadadminDashboardCSS() {
     document.head.appendChild(link);
   }
 }
+function loadViewSurveysCSS() {
+  const existingLink = document.getElementById("dynamic-css");
+  if (!existingLink) {
+    const link = document.createElement("link");
+    link.id = "dynamic-css";
+    link.rel = "stylesheet";
+    link.href = "admin/css/adminViewSurveys.css";
+    document.head.appendChild(link);
+  }
+}
+function loadCSS(href) {
+  document.querySelectorAll("link[rel='stylesheet']").forEach((link) => {
+    if (
+      link.href.includes("user/css") ||
+      link.href.includes("admin/css") ||
+      link.href.includes("home.css")
+    ) {
+      link.remove();
+    }
+  });
+
+  if (!document.querySelector(`link[href="${href}"]`)) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    document.head.appendChild(link);
+  }
+}
 
 function loadCustomCSS() {
   document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
@@ -67,6 +95,12 @@ function renderSurveyResponseDashboard() {
 }
 
 function loadJS(src, callback) {
+  let existingScript = document.querySelector(`script[src="${src}"]`);
+  if (existingScript) {
+    if (callback) callback(); // If script is already loaded, execute callback without reloading
+    return;
+  }
+
   const script = document.createElement("script");
   script.src = src;
   script.onload = callback;
@@ -88,9 +122,23 @@ function routeHandler() {
     });
   } else if (path === "/adminDashboard") {
     loadJS("admin/js/adminDashboard.js", () => {
+      loadCSS("admin/css/adminDashboard.css");
       if (typeof window.renderAdminDashboard === "function") {
-        loadadminDashboardCSS();
         window.renderAdminDashboard();
+      }
+    });
+  } else if (path === "/adminViewSurveys") {
+    loadJS("admin/js/adminViewSurveys.js", () => {
+      loadCSS("admin/css/adminViewSurveys.css");
+      if (typeof window.renderAdminViewSurveys === "function") {
+        window.renderAdminViewSurveys();
+      }
+    });
+  } else if (path === "/surveyResponseDashboard") {
+    loadJS("admin/js/surveyResponseDashboard.js", () => {
+      loadCSS("admin/css/surveyResponseDashboard.css");
+      if (typeof window.renderSurveyResponseDashboard === "function") {
+        window.renderSurveyResponseDashboard();
       }
     });
   } else {
@@ -98,20 +146,21 @@ function routeHandler() {
   }
 }
 
-const surveyStructure = {
+window.surveyStructure = window.surveyStructure || {
   tag: "div",
   attributes: { id: "survey-container" },
   children: [],
 };
 
-const paginationStructure = {
+window.paginationStructure = window.paginationStructure || {
   tag: "div",
   attributes: { id: "pagination" },
   children: [],
 };
 
-let currentPage = 0;
-const pageSize = 6;
+if (typeof window.pageSize === "undefined") {
+  window.pageSize = 6;
+}
 
 function viewSurveys(page = 0) {
   fetch(
@@ -154,7 +203,6 @@ function viewSurveys(page = 0) {
 
       renderJSON(surveyStructure, document.getElementById("survey-container"));
 
-      // Attach click event listeners after rendering
       surveys.forEach((survey) => {
         const surveyCard = document.getElementById(`survey-${survey.id}`);
         if (surveyCard) {
@@ -258,10 +306,5 @@ function renderJSON(json, parent, preserveExisting = false) {
   });
 }
 window.addEventListener("popstate", (event) => {
-  if (window.location.pathname === "/adminDashboard") {
-    loadadminDashboardCSS();
-    window.renderAdminDashboard();
-  } else {
-    routeHandler();
-  }
+  routeHandler();
 });

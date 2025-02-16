@@ -54,15 +54,15 @@ export function loadResponseDetails(surveyResponseId, surveyId) {
     rejectButton.textContent = "Reject";
     btnContainer.appendChild(rejectButton);
 
-    const backButton = document.createElement("a");
-    backButton.href = "javascript:void(0)";
-    backButton.className = "back-btn";
-    backButton.textContent = "Back to Responses";
-    backButton.addEventListener("click", () => {
-      window.history.pushState({}, "", "/surveyResponses");
-      routeHandler();
-    });
-    btnContainer.appendChild(backButton);
+    // const backButton = document.createElement("a");
+    // backButton.href = "javascript:void(0)";
+    // backButton.className = "back-btn";
+    // backButton.textContent = "Back to Responses";
+    // backButton.addEventListener("click", () => {
+    //   window.history.pushState({}, "", "/surveyResponses");
+    //   routeHandler();
+    // });
+    // btnContainer.appendChild(backButton);
 
     container.appendChild(btnContainer);
     document.body.appendChild(container);
