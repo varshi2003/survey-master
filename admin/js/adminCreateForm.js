@@ -393,75 +393,187 @@ function renderAdminCreateForm() {
   }
 
   function editQuestion(index) {
-   
     event?.preventDefault();
 
     const modal = document.createElement("div");
     modal.style.position = "fixed";
-    modal.style.top = "20%";
+    modal.style.top = "50%";
     modal.style.left = "50%";
     modal.style.transform = "translate(-50%, -50%)";
     modal.style.background = "white";
-    modal.style.padding = "20px";
-    modal.style.boxShadow = "0px 0px 10px rgba(0, 0, 0, 0.2)";
-    modal.style.borderRadius = "5px";
+    modal.style.padding = "25px";
+    modal.style.boxShadow = "0px 4px 15px rgba(0, 0, 0, 0.3)";
+    modal.style.borderRadius = "8px";
     modal.style.zIndex = "1000";
+    modal.style.textAlign = "center";
+    modal.style.width = "350px";
+
+    const overlay = document.createElement("div");
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
+    overlay.style.zIndex = "999";
 
     const label = document.createElement("label");
     label.textContent = "Edit your question:";
     label.style.display = "block";
-    label.style.marginBottom = "5px";
+    label.style.marginBottom = "10px";
+    label.style.fontSize = "16px";
+    label.style.fontWeight = "bold";
 
     const input = document.createElement("input");
     input.type = "text";
     input.value = questions[index].question;
-    input.style.width = "100%";
-    input.style.marginBottom = "2px";
-    input.style.marginLeft = "-10px";
+    input.style.width = "90%";
+    input.style.padding = "8px";
+    input.style.border = "1px solid #ccc";
+    input.style.borderRadius = "5px";
+    input.style.marginBottom = "15px";
+    input.style.fontSize = "14px";
+
+    const buttonContainer = document.createElement("div");
+    buttonContainer.style.display = "flex";
+    buttonContainer.style.justifyContent = "center";
+    buttonContainer.style.gap = "10px";
 
     const saveButton = document.createElement("button");
     saveButton.textContent = "Save";
-    saveButton.style.marginRight = "10px";
-    saveButton.style.backgroundColor = "green";
+    saveButton.style.backgroundColor = "#28a745";
     saveButton.style.color = "white";
-    saveButton.type = "button"; 
+    saveButton.style.border = "none";
+    saveButton.style.padding = "8px 15px";
+    saveButton.style.borderRadius = "5px";
+    saveButton.style.cursor = "pointer";
+    saveButton.type = "button";
 
     const cancelButton = document.createElement("button");
     cancelButton.textContent = "Cancel";
-    cancelButton.style.backgroundColor = "red";
+    cancelButton.style.backgroundColor = "#6c757d";
     cancelButton.style.color = "white";
-    cancelButton.type = "button"; 
+    cancelButton.style.border = "none";
+    cancelButton.style.padding = "8px 15px";
+    cancelButton.style.borderRadius = "5px";
+    cancelButton.style.cursor = "pointer";
+    cancelButton.type = "button";
 
-  
+    buttonContainer.appendChild(saveButton);
+    buttonContainer.appendChild(cancelButton);
+
     modal.appendChild(label);
     modal.appendChild(input);
-    modal.appendChild(saveButton);
-    modal.appendChild(cancelButton);
+    modal.appendChild(buttonContainer);
 
+    document.body.appendChild(overlay);
     document.body.appendChild(modal);
 
-    
     saveButton.addEventListener("click", (event) => {
-        event.preventDefault(); 
-        questions[index].question = input.value;
-        document.body.removeChild(modal);
-        renderQuestions();
+      event.preventDefault();
+      questions[index].question = input.value;
+      document.body.removeChild(modal);
+      document.body.removeChild(overlay);
+      renderQuestions();
     });
 
     cancelButton.addEventListener("click", (event) => {
-        event.preventDefault(); 
-        document.body.removeChild(modal);
+      event.preventDefault();
+      document.body.removeChild(modal);
+      document.body.removeChild(overlay);
     });
 
-    
-    modal.addEventListener("submit", (event) => event.preventDefault());
-}
+    overlay.addEventListener("click", () => {
+      document.body.removeChild(modal);
+      document.body.removeChild(overlay);
+    });
+  }
 
   function removeQuestion(index) {
-    if (confirm("Are you sure you want to delete this question?")) {
+    event?.preventDefault();
+
+    const modal = document.createElement("div");
+    modal.style.position = "fixed";
+    modal.style.top = "50%";
+    modal.style.left = "50%";
+    modal.style.transform = "translate(-50%, -50%)";
+    modal.style.background = "white";
+    modal.style.padding = "25px";
+    modal.style.boxShadow = "0px 4px 15px rgba(0, 0, 0, 0.3)";
+    modal.style.borderRadius = "8px";
+    modal.style.zIndex = "1000";
+    modal.style.textAlign = "center";
+    modal.style.width = "300px";
+
+    // Create an overlay background for better UI
+    const overlay = document.createElement("div");
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
+    overlay.style.zIndex = "999";
+
+    const message = document.createElement("p");
+    message.textContent = "Are you sure you want to delete this question?";
+    message.style.marginBottom = "15px";
+    message.style.fontSize = "16px";
+    message.style.fontWeight = "bold";
+
+    const buttonContainer = document.createElement("div");
+    buttonContainer.style.display = "flex";
+    buttonContainer.style.justifyContent = "center";
+    buttonContainer.style.gap = "10px";
+
+    const confirmButton = document.createElement("button");
+    confirmButton.textContent = "Yes";
+    confirmButton.style.backgroundColor = "#d9534f";
+    confirmButton.style.color = "white";
+    confirmButton.style.border = "none";
+    confirmButton.style.padding = "8px 15px";
+    confirmButton.style.borderRadius = "5px";
+    confirmButton.style.cursor = "pointer";
+    confirmButton.type = "button";
+
+    const cancelButton = document.createElement("button");
+    cancelButton.textContent = "Cancel";
+    cancelButton.style.backgroundColor = "#6c757d";
+    cancelButton.style.color = "white";
+    cancelButton.style.border = "none";
+    cancelButton.style.padding = "8px 15px";
+    cancelButton.style.borderRadius = "5px";
+    cancelButton.style.cursor = "pointer";
+    cancelButton.type = "button";
+
+    buttonContainer.appendChild(confirmButton);
+    buttonContainer.appendChild(cancelButton);
+
+    modal.appendChild(message);
+    modal.appendChild(buttonContainer);
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(modal);
+
+    confirmButton.addEventListener("click", (event) => {
+      event.preventDefault();
       questions.splice(index, 1);
+      document.body.removeChild(modal);
+      document.body.removeChild(overlay);
       renderQuestions();
-    }
+    });
+
+    cancelButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      document.body.removeChild(modal);
+      document.body.removeChild(overlay);
+    });
+
+    // Close on overlay click
+    overlay.addEventListener("click", () => {
+      document.body.removeChild(modal);
+      document.body.removeChild(overlay);
+    });
   }
 
   function saveSurvey() {
@@ -605,10 +717,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
 window.addEventListener("popstate", (event) => {
   if (window.location.pathname === "/adminDashboard") {
-    loadadminDashboardCSS(); 
+    loadadminDashboardCSS();
     window.renderAdminDashboard();
   } else {
     routeHandler();
