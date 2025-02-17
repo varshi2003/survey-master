@@ -34,8 +34,17 @@ const store = (() => {
   };
 })();
 
+function handleRoleChange(newRole) {
+  if (newRole === "Admin") {
+    store.unsubscribe("userRole", handleRoleChange);
+    navigateTo("/adminDashboard");
+  } else {
+    store.subscribe("userRole", handleRoleChange);
+    navigateTo("/UserViewSurveys");
+  }
+}
 
-
+store.subscribe("userRole", handleRoleChange);
 
 export function htmlBuilder(elements, parent) {
   const listOfElements = [];
@@ -279,11 +288,3 @@ function renderUserViewSurveys() {
     showError("viewSurveys function not loaded properly.");
   }
 }
-
-store.subscribe("userRole", (newRole) => {
-  if (newRole === "Admin") {
-    navigateTo("/adminDashboard");
-  } else if (newRole === "User") {
-    navigateTo("/UserViewSurveys");
-  }
-});
