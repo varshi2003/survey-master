@@ -156,3 +156,9 @@ body {
   gap: 20px; 
   padding: 20px;
 }
+
+.delete-icon{
+  width: 50px;
+   cursor: pointer; 
+  
+}

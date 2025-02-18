@@ -50,11 +50,12 @@ function htmlBuilder(elements, parent) {
   return listOfElements;
 }
 
+
 function removeOldCSSAndJS() {
-  document
-    .querySelectorAll("link[id^='admin-'], script[id^='admin-']")
-    .forEach((elem) => elem.remove());
+  document.querySelectorAll("link[id^='admin-'], script[id^='admin-']").forEach((elem) => elem.remove());
+  document.body.className = ""; 
 }
+
 
 function loadCSS(href, id) {
   if (!document.getElementById(id)) {
@@ -113,7 +114,7 @@ window.renderAdminViewSurveys = function () {
   viewSurveys();
 };
 
-// Ensure pageSize is defined only once
+
 window.pageSize = window.pageSize || 3;
 window.currentPage = window.currentPage || 0;
 
@@ -160,8 +161,22 @@ function viewSurveys(page = 0) {
                   },
                 ].filter(Boolean),
                 events: {
-                  click: () =>
-                    (window.location.hash = `#/adminViewForm?id=${survey.id}`),
+                  click: () => {
+                    Swal.fire({
+                      title: "Survey Options",
+                      text: "Choose an action:",
+                      icon: "question",
+                     showCancelButton: true,
+                      confirmButtonText: "View Survey",
+                      cancelButtonText: "Delete Survey",
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        window.location.hash = `#/adminViewForm?id=${survey.id}`;
+                      } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        deleteSurvey(survey.id);
+                      }
+                    });
+                  },
                 },
               },
             ],
@@ -258,6 +273,7 @@ function loadAdminViewForm(surveyId) {
 
 window.addEventListener("hashchange", routeHandler);
 window.addEventListener("load", routeHandler);
+window.addEventListener("popstate", routeHandler);
 
 window.addEventListener("popstate", () => {
   removeOldCSSAndJS();
@@ -273,3 +289,32 @@ window.addEventListener("popstate", () => {
     routeHandler();
   }
 });
+function deleteSurvey(surveyId) {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`${window.CONFIG.HOST_URL}/api/surveys/${surveyId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      })
+        .then((response) => {
+          if (response.ok) {
+            Swal.fire("Deleted!", "Survey has been deleted.", "success");
+            viewSurveys(window.currentPage);
+          } else {
+            Swal.fire("Error!", "Failed to delete survey.", "error");
+          }
+        })
+        .catch(() => {
+          Swal.fire("Error!", "Something went wrong.", "error");
+        });
+    }
+  });
+}
