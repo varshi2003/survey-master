@@ -39,7 +39,7 @@ h1 {
 .rd-response-container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 0px;
   margin-bottom: 20px;
   max-height: 400px; 
   overflow-y: auto; 
@@ -54,7 +54,15 @@ h1 {
   font-size: 14px;
   line-height: 1.5;
 }
+.response-card{
 
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  text-align: left;
+}
 .back-btn {
   display: inline-block;
   text-decoration: none;
@@ -92,6 +100,7 @@ h1 {
 
 .btn.accept {
   background-color: #28a745;
+  color: #e0e7ef;
 }
 
 .btn.accept:hover {
@@ -104,4 +113,7 @@ h1 {
 
 .btn.reject:hover {
   background-color: #c82333;
+}
+.button.btn.accept{
+  color: #fff;
 }
