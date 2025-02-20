@@ -146,7 +146,9 @@ function createHomePage() {
             {
               tag: "img",
               attributes: {
-                src: "https://img.icons8.com/ios-filled/100/admin-settings-male.png",
+                // src: "https://img.icons8.com/ios-filled/100/admin-settings-male.png",
+                class : "card-image",
+                src: "images/admin-logo-survey-master.jpg",
                 alt: "Admin Icon",
               },
             },
@@ -161,7 +163,9 @@ function createHomePage() {
             {
               tag: "img",
               attributes: {
-                src: "https://img.icons8.com/ios-filled/100/user.png",
+                // src: "https://img.icons8.com/ios-filled/100/user.png",
+                class : "card-image",
+                src: "images/user-logo-survey-master.jpg",
                 alt: "User Icon",
               },
             },
