@@ -36,7 +36,11 @@ function renderAdminCreateForm() {
 
   const title = document.createElement("h1");
   title.textContent = "Let's Create a New Survey!";
+  const descriptionLabel = document.createElement("label");
+  descriptionLabel.textContent = "Survey Title";
   app.appendChild(title);
+  app.appendChild(descriptionLabel);
+  
 
   const surveyNameInput = document.createElement("input");
   surveyNameInput.type = "text";
@@ -505,7 +509,7 @@ function renderAdminCreateForm() {
     modal.style.textAlign = "center";
     modal.style.width = "300px";
 
-    // Create an overlay background for better UI
+    
     const overlay = document.createElement("div");
     overlay.style.position = "fixed";
     overlay.style.top = "0";

@@ -115,7 +115,24 @@ function getSurvey(surveyId) {
               inputElement.setAttribute("data-maxlength", "200");
             }
             break;
+
           case "MultipleChoice":
+            question.additionalProperties.options.forEach((option) => {
+              let optionWrapper = document.createElement("label");
+              optionWrapper.className = "option";
+
+              let checkbox = document.createElement("input");
+              checkbox.type = "checkbox";
+
+              checkbox.name = `multiplechoice-${index}`;
+              checkbox.value = option;
+
+              optionWrapper.appendChild(checkbox);
+              optionWrapper.appendChild(document.createTextNode(` ${option}`));
+              field.appendChild(optionWrapper);
+            });
+            break;
+
           case "RadioButton":
             const optionContainer = document.createElement("div");
             optionContainer.className = "option-container";
@@ -277,22 +294,21 @@ function submitSurvey() {
         case "Paragraph":
         case "DropDown":
         case "DateAndTime":
+        case "RadioButton":
         case "Email":
           response.answer = element.value;
           break;
+
         case "MultipleChoice":
           response.answer = [];
-          document
-            .querySelectorAll(`input[name="multipleChoice-${index}"]:checked`)
-            .forEach((checkbox) => {
-              response.answer.push(checkbox.value);
-            });
+          const checkboxes = document.querySelectorAll(
+            `input[name="multiplechoice-${index}"]:checked`
+          );
+          checkboxes.forEach((checkbox) => {
+            response.answer.push(checkbox.value);
+          });
           break;
-        case "RadioButton":
-          response.answer =
-            document.querySelector(`input[name="radio-${index}"]:checked`)
-              ?.value || "";
-          break;
+
         case "FileUpload":
           response.answer = element.files[0]?.name || "";
           break;
