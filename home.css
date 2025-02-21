@@ -42,7 +42,14 @@ body {
   display: block; 
   margin: 0 auto; 
 }
+.card-image-admin{
+  width: 150px; 
+  height: 150px; 
+  object-fit: contain; 
+  display: block; 
+  margin: 0 auto; 
 
+}
 
 
 
