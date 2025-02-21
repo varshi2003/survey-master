@@ -239,7 +239,7 @@ function renderAdminCreateForm() {
       div.appendChild(requiredDiv);
 
       const labelQuestion = document.createElement("label");
-      labelQuestion.textContent = "Question:";
+      labelQuestion.textContent = `${index+1} . Question:`;
       div.appendChild(labelQuestion);
 
       const inputText = document.createElement("input");
@@ -573,7 +573,6 @@ function renderAdminCreateForm() {
       document.body.removeChild(overlay);
     });
 
-    // Close on overlay click
     overlay.addEventListener("click", () => {
       document.body.removeChild(modal);
       document.body.removeChild(overlay);

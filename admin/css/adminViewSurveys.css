@@ -108,6 +108,7 @@ body {
 }
 
 .page-info {
+  margin-top: 30px;
   font-size: 1rem;
   font-weight: 600;
   color: #444;
@@ -119,6 +120,7 @@ body {
 }
 
 .pagination-button {
+  margin-top: 30px;
   padding: 10px 20px;
   border: none;
   background: #091133;
